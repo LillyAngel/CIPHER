@@ -1,0 +1,2 @@
+C:\Users\zwola\source\repos\Cypher\Cypher\bin\Release\net8.0-windows\win-x64\app.publish\Cypher.pdb
+C:\Users\zwola\source\repos\Cypher\Cypher\bin\Release\net8.0-windows\win-x64\app.publish\Cypher.exe

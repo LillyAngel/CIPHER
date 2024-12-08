@@ -1,0 +1,9 @@
+C:\Users\zwola\Desktop\v1\Cypher.exe
+C:\Users\zwola\Desktop\v1\Cypher.dll
+C:\Users\zwola\Desktop\v1\Cypher.deps.json
+C:\Users\zwola\Desktop\v1\Cypher.runtimeconfig.json
+C:\Users\zwola\Desktop\v1\Cypher.pdb
+C:\Users\zwola\Desktop\v1\ControlzEx.dll
+C:\Users\zwola\Desktop\v1\MahApps.Metro.dll
+C:\Users\zwola\Desktop\v1\Microsoft.Xaml.Behaviors.dll
+C:\Users\zwola\Desktop\v1\de\MahApps.Metro.resources.dll
