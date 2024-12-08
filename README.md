@@ -18,4 +18,4 @@ CIPHER is a simple file encryption and decryption application built with WPF. It
 1. Clone the repository:
    ```bash
    git clone https://github.com/LillyAngel/cipher.git
-Open the project in Visual Studio and build the application.
+2. Open the project in Visual Studio and build the application.
