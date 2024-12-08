@@ -47,28 +47,25 @@ namespace Cypher
         {
             try
             {
-                // Wywołanie funkcji szyfrowania
                 EncryptFile(SelectedFilePath, fileContent);
             }
             catch (Exception ex)
             {
-                // Logowanie błędu
                 LogActivity("Encryption", SelectedFilePath, "N/A", fileContent.Length, false, ex.Message);
             }
 
-            OnHomeButtonClicked(null, null); // Resetowanie UI po szyfrowaniu
+            OnHomeButtonClicked(null, null);
         }
 
 
         private void OnDecryptButtonClicked(object sender, RoutedEventArgs e)
         {
-            // Upewnij się, że przyciski szyfrowania są ukryte
             encrypt.Visibility = Visibility.Collapsed;
             decrypt.Visibility = Visibility.Collapsed;
 
-            decryptPanel.Visibility = Visibility.Visible; // Pokaż panel deszyfrowania
-            homeButton.Visibility = Visibility.Visible; // Pokaż przycisk "Home"
-            fileInfoPanel.Visibility = Visibility.Collapsed; // Upewnij się, że panel z informacjami jest widoczny
+            decryptPanel.Visibility = Visibility.Visible; 
+            homeButton.Visibility = Visibility.Visible; 
+            fileInfoPanel.Visibility = Visibility.Collapsed; 
 
         }
 
@@ -115,13 +112,12 @@ namespace Cypher
 
         private void OnHomeButtonClicked(object sender, RoutedEventArgs e)
         {
-            // Resetuj wszystkie elementy UI do stanu początkowego
             decryptPanel.Visibility = Visibility.Collapsed;
             browse.Visibility = Visibility.Visible;
             encrypt.Visibility = Visibility.Collapsed;
             decrypt.Visibility = Visibility.Collapsed;
 
-            fileInfoPanel.Visibility = Visibility.Collapsed; // Ukryj panel z informacjami
+            fileInfoPanel.Visibility = Visibility.Collapsed;
 
             keyText.Clear();
             ivText.Clear();
@@ -130,13 +126,9 @@ namespace Cypher
             SelectedKeyIvFilePath = null;
             fileContent = null;
 
-            // Ukryj logi
             activityLogListView.ItemsSource = null;
             activityLogListView.Visibility = Visibility.Collapsed;
-
-            // Ustaw widoczność przycisku logów
-            historyButton.Visibility = Visibility.Visible; // Upewnij się, że przycisk logów jest widoczny
-
+            historyButton.Visibility = Visibility.Visible;
             homeButton.Visibility = Visibility.Collapsed;
         }
 
@@ -172,7 +164,6 @@ namespace Cypher
                     cryptoStream.Write(fileContent, 0, fileContent.Length);
                 }
 
-                // Logowanie operacji
                 LogActivity("Encryption", filePath, sfd.FileName, fileContent.Length, true);
                 ShowSuccessMessage($"File successfully encrypted and saved as:\n{sfd.FileName}");
             }
@@ -231,13 +222,13 @@ namespace Cypher
         private string FormatFileSize(long bytes)
         {
             if (bytes < 1024)
-                return $"{bytes} B"; // bajty
+                return $"{bytes} B"; 
             else if (bytes < 1024 * 1024)
-                return $"{Math.Round(bytes / 1024.0, 2)} KB"; // kilobajty
+                return $"{Math.Round(bytes / 1024.0, 2)} KB";
             else if (bytes < 1024 * 1024 * 1024)
-                return $"{Math.Round(bytes / (1024.0 * 1024.0), 2)} MB"; // megabajty
+                return $"{Math.Round(bytes / (1024.0 * 1024.0), 2)} MB";
             else
-                return $"{Math.Round(bytes / (1024.0 * 1024.0 * 1024.0), 2)} GB"; // gigabajty
+                return $"{Math.Round(bytes / (1024.0 * 1024.0 * 1024.0), 2)} GB";
         }
         public void ShowSuccessMessage(string message)
         {
@@ -265,7 +256,6 @@ namespace Cypher
         }
         private void LogActivity(string operationType, string filePath, string destinationPath, long fileSize, bool success, string errorMessage = null)
         {
-            // Użycie GetReadableFileSize do przekształcenia rozmiaru
             string formattedSize = GetReadableFileSize(fileSize);
 
             string logEntry = $"{DateTime.Now}: Operation: {operationType}, " +
@@ -277,7 +267,6 @@ namespace Cypher
                 logEntry += $", Error: {errorMessage}";
             }
 
-            // Zapisz logi do pliku
             File.AppendAllText("activity_log.txt", logEntry + Environment.NewLine);
         }
 
@@ -337,7 +326,6 @@ namespace Cypher
                 activityLogListView.ItemsSource = logEntries;
                 activityLogListView.Visibility = Visibility.Visible;
 
-                // Ustaw przycisk Home jako widoczny
                 homeButton.Visibility = Visibility.Visible;
             }
             else
