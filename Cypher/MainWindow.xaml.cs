@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
 using Microsoft.Win32;
 using MahApps.Metro.Controls;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Animation;
 
 namespace Cypher
 {
@@ -18,6 +19,18 @@ namespace Cypher
             InitializeComponent();
             decryptPanel.Visibility = Visibility.Collapsed;
             homeButton.Visibility = Visibility.Collapsed;
+
+            HeaderCypher.Opacity = 0;
+            HeaderSubtitle.Opacity = 0;
+            browse.Opacity = 0;
+            historyButton.Opacity = 0;
+
+            var introAnimation = (Storyboard)this.Resources["IntroAnimation"];
+            if (introAnimation != null)
+            {
+                introAnimation.Begin();
+            }
+
         }
         private void OnBrowseButtonClicked(object sender, RoutedEventArgs e)
         {
@@ -41,8 +54,6 @@ namespace Cypher
                 historyButton.Visibility = Visibility.Collapsed;
             }
         }
-
-
         private void OnEncryptButtonClicked(object sender, RoutedEventArgs e)
         {
             try
@@ -56,19 +67,14 @@ namespace Cypher
 
             OnHomeButtonClicked(null, null);
         }
-
-
         private void OnDecryptButtonClicked(object sender, RoutedEventArgs e)
         {
             encrypt.Visibility = Visibility.Collapsed;
             decrypt.Visibility = Visibility.Collapsed;
-
-            decryptPanel.Visibility = Visibility.Visible; 
+            decryptPanel.Visibility = Visibility.Visible;
             homeButton.Visibility = Visibility.Visible; 
-            fileInfoPanel.Visibility = Visibility.Collapsed; 
-
+            fileInfoPanel.Visibility = Visibility.Collapsed;
         }
-
         private void OnSelectKeyIvButtonClicked(object sender, RoutedEventArgs e)
         {
             var ofd = new OpenFileDialog
@@ -81,7 +87,6 @@ namespace Cypher
                 ShowErrorMessage($"Selected Key/IV File: {SelectedKeyIvFilePath}");
             }
         }
-
         private void OnDecryptFileButtonClicked(object sender, RoutedEventArgs e)
         {
             string keyInput = keyText.Text;
@@ -109,31 +114,30 @@ namespace Cypher
                 ShowErrorMessage("Please select a Key/IV file or provide Key and IV values.");
             }
         }
-
+        // -------------------------------------
+        // Reset UI
+        // -------------------------------------
         private void OnHomeButtonClicked(object sender, RoutedEventArgs e)
         {
             decryptPanel.Visibility = Visibility.Collapsed;
             browse.Visibility = Visibility.Visible;
             encrypt.Visibility = Visibility.Collapsed;
             decrypt.Visibility = Visibility.Collapsed;
-
             fileInfoPanel.Visibility = Visibility.Collapsed;
-
             keyText.Clear();
             ivText.Clear();
             extensionText.Clear();
             SelectedFilePath = null;
             SelectedKeyIvFilePath = null;
             fileContent = null;
-
             activityLogListView.ItemsSource = null;
             activityLogListView.Visibility = Visibility.Collapsed;
             historyButton.Visibility = Visibility.Visible;
             homeButton.Visibility = Visibility.Collapsed;
         }
-
-
-
+        // -------------------------------------
+        // Logika szyfrowania
+        // -------------------------------------
         public void EncryptFile(string filePath, byte[] fileContent)
         {
             string directoryPath = "key_iv";
@@ -141,21 +145,16 @@ namespace Cypher
             {
                 Directory.CreateDirectory(directoryPath);
             }
-
             string keyIvFileName = Path.Combine(directoryPath, Path.GetFileNameWithoutExtension(filePath) + "_key_iv.txt");
-
             byte[] key = new byte[32];
             byte[] iv = new byte[16];
             RandomNumberGenerator.Fill(key);
             RandomNumberGenerator.Fill(iv);
-
             File.WriteAllText(keyIvFileName, $"{Convert.ToBase64String(key)}\n{Convert.ToBase64String(iv)}\nExtension: {Path.GetExtension(filePath)}");
-
             var sfd = new SaveFileDialog()
             {
                 Filter = "Encrypted Files (*.enc)|*.enc"
             };
-
             if (sfd.ShowDialog() == true)
             {
                 using (var encryptedStream = new FileStream(sfd.FileName, FileMode.Create))
@@ -163,18 +162,17 @@ namespace Cypher
                 {
                     cryptoStream.Write(fileContent, 0, fileContent.Length);
                 }
-
                 LogActivity("Encryption", filePath, sfd.FileName, fileContent.Length, true);
                 ShowSuccessMessage($"File successfully encrypted and saved as:\n{sfd.FileName}");
             }
         }
-
-
+        // -------------------------------------
+        // Logika deszyfrowania
+        // -------------------------------------
         public void DecryptFile(string filePath, string keyIvFilePath, string keyInput, string ivInput, string previousExtension)
         {
             byte[] key = null;
             byte[] iv = null;
-
             if (!string.IsNullOrEmpty(keyIvFilePath) && File.Exists(keyIvFilePath))
             {
                 var keyIvData = File.ReadAllLines(keyIvFilePath);
@@ -182,7 +180,6 @@ namespace Cypher
                 {
                     ShowErrorMessage("Key/IV file format is invalid. Please check the file content.");
                 }
-
                 key = Convert.FromBase64String(keyIvData[0].Trim());
                 iv = Convert.FromBase64String(keyIvData[1].Trim());
                 previousExtension = keyIvData[2].Split(':')[1].Trim();
@@ -196,33 +193,30 @@ namespace Cypher
             {
                 ShowErrorMessage("Key and IV must be provided either through the Key/IV file or directly.");
             }
-
             long originalFileSize = new FileInfo(filePath).Length;
-
             using (var encryptedStream = new FileStream(filePath, FileMode.Open))
             using (Aes aes = Aes.Create())
             {
                 aes.Key = key;
                 aes.IV = iv;
                 aes.Mode = CipherMode.CBC;
-
                 string decryptedFilePath = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + previousExtension);
-
                 using (var decryptedStream = new FileStream(decryptedFilePath, FileMode.Create))
                 using (var cryptoStream = new CryptoStream(encryptedStream, aes.CreateDecryptor(), CryptoStreamMode.Read))
                 {
                     cryptoStream.CopyTo(decryptedStream);
                 }
             }
-
             LogActivity("Decryption", filePath, Path.GetFileNameWithoutExtension(filePath) + previousExtension, originalFileSize, true);
             ShowSuccessMessage($"File decrypted successfully: {Path.GetFileNameWithoutExtension(filePath) + previousExtension}");
         }
-
+        // -------------------------------------
+        // Konwersja wielkosci pliku
+        // -------------------------------------
         private string FormatFileSize(long bytes)
         {
             if (bytes < 1024)
-                return $"{bytes} B"; 
+                return $"{bytes} B";
             else if (bytes < 1024 * 1024)
                 return $"{Math.Round(bytes / 1024.0, 2)} KB";
             else if (bytes < 1024 * 1024 * 1024)
@@ -230,6 +224,9 @@ namespace Cypher
             else
                 return $"{Math.Round(bytes / (1024.0 * 1024.0 * 1024.0), 2)} GB";
         }
+        // -------------------------------------
+        // Alerty
+        // -------------------------------------
         public void ShowSuccessMessage(string message)
         {
             CustomMessageBox customMessageBox = new CustomMessageBox(message);
@@ -240,18 +237,19 @@ namespace Cypher
             var messageBox = new CustomMessageBox(message);
             messageBox.ShowDialog();
         }
+        // -------------------------------------
+        // Logika logowania
+        // -------------------------------------
         private string GetReadableFileSize(long bytes)
         {
             string[] units = { "B", "KB", "MB", "GB", "TB" };
             double size = bytes;
             int unitIndex = 0;
-
             while (size >= 1024 && unitIndex < units.Length - 1)
             {
                 size /= 1024;
                 unitIndex++;
             }
-
             return $"{size:0.##} {units[unitIndex]}";
         }
         private void LogActivity(string operationType, string filePath, string destinationPath, long fileSize, bool success, string errorMessage = null)
@@ -269,7 +267,6 @@ namespace Cypher
 
             File.AppendAllText("activity_log.txt", logEntry + Environment.NewLine);
         }
-
         private void OnHistoryButtonClicked(object sender, RoutedEventArgs e)
         {
             LoadActivityLog();
@@ -322,10 +319,8 @@ namespace Cypher
                         continue;
                     }
                 }
-
                 activityLogListView.ItemsSource = logEntries;
                 activityLogListView.Visibility = Visibility.Visible;
-
                 homeButton.Visibility = Visibility.Visible;
             }
             else
