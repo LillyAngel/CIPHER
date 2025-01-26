@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="Cypher.CustomMessageBox"
+<mah:MetroWindow x:Class="Cypher.CustomMessageBox"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
@@ -10,7 +10,7 @@
     <Grid>
         <Border CornerRadius="10" Background="#FF424242" Padding="10">
             <StackPanel>
-                <TextBlock Name="MessageTextBlock" Text="Twój komunikat" 
+                <TextBlock Name="MessageTextBlock" Text="Test" 
                            TextWrapping="Wrap"
                            FontSize="16" Margin="0,0,0,10" TextAlignment="Center"/>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
