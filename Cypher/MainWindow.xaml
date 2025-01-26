@@ -1,4 +1,4 @@
-﻿<mah:MetroWindow x:Class="Cypher.MainWindow"
+<mah:MetroWindow x:Class="Cypher.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -12,26 +12,48 @@
         WindowTransitionsEnabled="False"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Storyboard x:Key="IntroAnimation">
+            <DoubleAnimation
+                Storyboard.TargetName="browse"
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1" Duration="0:0:1" BeginTime="0:0:4" AutoReverse="False" />
+            <DoubleAnimation
+                Storyboard.TargetName="historyButton"
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1" Duration="0:0:1" BeginTime="0:0:6" AutoReverse="False" />
+            <DoubleAnimation
+                Storyboard.TargetName="HeaderCypher"
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1" Duration="0:0:1" BeginTime="0:0:00" AutoReverse="False" />
+            <DoubleAnimation
+                Storyboard.TargetName="HeaderSubtitle"
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1" Duration="0:0:1" BeginTime="0:0:2" AutoReverse="False" />
+        </Storyboard>
+    </Window.Resources>
     <Grid>
         <mah:MetroHeader
+     x:Name="HeaderCypher"
      mah:HeaderedControlHelper.HeaderFontSize="40"
      mah:HeaderedControlHelper.HeaderFontWeight="Bold"
      mah:HeaderedControlHelper.HeaderVerticalContentAlignment="Top"
      mah:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
      mah:HeaderedControlHelper.HeaderForeground="WhiteSmoke"
      Margin="0, 70"
-     Header="CYPHER" />
+     Header="CYPHER" Opacity="0"/>
         <mah:MetroHeader
+     x:Name="HeaderSubtitle"
      mah:HeaderedControlHelper.HeaderFontSize="20"
      mah:HeaderedControlHelper.HeaderFontWeight="Bold"
      mah:HeaderedControlHelper.HeaderVerticalContentAlignment="Top"
      mah:HeaderedControlHelper.HeaderHorizontalContentAlignment="Center"
      mah:HeaderedControlHelper.HeaderForeground="WhiteSmoke"
      Margin="0, 140"
-     Header="No. 1 File Encryption and Decryption App" />
-
-        <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="browse" FontWeight="Bold" Content="SELECT FILE" Width="200" Height="60" Click="OnBrowseButtonClicked" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5"/>
-        <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="historyButton" FontWeight="Bold" Content="ACTIVITY LOG" Width="200" Height="60" Click="OnHistoryButtonClicked" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0, 0, 0, 180"/>
+     Header="No. 1 File Encryption and Decryption App" Opacity="0"/>
+        <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="browse" FontWeight="Bold" Content="SELECT FILE" Width="200" Height="60" Click="OnBrowseButtonClicked" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" Opacity="0"/>
+        <Button Style="{StaticResource MahApps.Styles.Button.Square.Accent}" Name="historyButton" FontWeight="Bold" Content="ACTIVITY LOG" Width="200" Height="60" Click="OnHistoryButtonClicked" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0, 0, 0, 180" Opacity="0"/>
         <ListView x:Name="activityLogListView" Visibility="Collapsed">
             <ListView.View>
                 <GridView>
